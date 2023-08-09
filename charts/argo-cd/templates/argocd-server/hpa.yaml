@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "argo-cd.labels" (dict "context" . "component" .Values.server.name "name" (printf "%s-hpa" .Values.server.name)) | nindent 4 }}
   name: {{ template "argo-cd.server.fullname" . }}-hpa
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -13,6 +14,9 @@ spec:
   minReplicas: {{ .Values.server.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.server.autoscaling.maxReplicas }}
   metrics:
+  {{- if .Values.server.autoscaling.metrics }}
+    {{ toYaml .Values.server.autoscaling.metrics | nindent 4 }}
+  {{- else }}
   {{- with .Values.server.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
@@ -37,6 +41,7 @@ spec:
           type: Utilization
         {{- end }}
   {{- end }}
+  {{- end}}
   {{- with .Values.server.autoscaling.behavior }}
   behavior:
     {{- toYaml . | nindent 4 }}

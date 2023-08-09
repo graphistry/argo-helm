@@ -17,6 +17,19 @@ To regenerate this document, please run:
 ./scripts/helm-docs.sh
 ```
 
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+
+```console
+$ helm repo add argo https://argoproj.github.io/argo-helm
+"argo" has been added to your repositories
+
+$ helm install my-release argo/argo-events
+NAME: my-release
+...
+```
+
 ## Upgrading
 
 ### Custom resource definitions
@@ -62,6 +75,7 @@ done
 | crds.install | bool | `true` | Install and upgrade CRDs |
 | crds.keep | bool | `true` | Keep CRDs on chart uninstall |
 | createAggregateRoles | bool | `false` | Create clusterroles that extend existing clusterroles to interact with argo-events crds Only applies for cluster-wide installation (`controller.rbac.namespaced: false`) |
+| extraObjects | list | `[]` | Array of extra K8s manifests to deploy |
 | fullnameOverride | string | `""` | String to fully override "argo-events.fullname" template |
 | global.additionalLabels | object | `{}` | Additional labels to add to all resources |
 | global.hostAliases | list | `[]` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files |
@@ -113,6 +127,7 @@ done
 | controller.podLabels | object | `{}` | Labels to be added to events controller pods |
 | controller.priorityClassName | string | `""` | Priority class for the events controller pods |
 | controller.rbac.enabled | bool | `true` | Create events controller RBAC |
+| controller.rbac.managedNamespace | string | `""` | Additional namespace to be monitored by the controller |
 | controller.rbac.namespaced | bool | `false` | Restrict events controller to operate only in a single namespace instead of cluster-wide scope. |
 | controller.rbac.rules | list | `[]` | Additional user rules for event controller's rbac |
 | controller.readinessProbe.failureThreshold | int | `3` | Minimum consecutive failures for the [probe] to be considered failed after having succeeded |
